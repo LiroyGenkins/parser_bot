@@ -21,16 +21,36 @@ class Session:
     """
     Класс управления соединением с БД и поисковых запросов к ней
     """
+    def __init__(self, hostname='localhost', username='postgres',
+                 password='postgres', database='parser_bot'):
+        self.hostname = hostname
+        self.username = username
+        self.password = password
+        self.database = database
+
     # Создание подключения к БД
     def open_session(self):
-        hostname = 'localhost'
-        username = 'postgres'
-        password = 'postgres'
-        database = 'parser_bot'
         self.connection = psycopg2.connect(
-            host=hostname, user=username, password=password,
-            dbname=database)
+            host=self.hostname, user=self.username, password=self.password,
+            dbname=self.database)
         self.cur = self.connection.cursor()
+        self.create_tables()
+
+    # Создание таблиц
+    def create_tables(self):
+        self.cur.execute("CREATE TABLE problems("
+                         "problem_number TEXT PRIMARY KEY, "
+                         "problem_name TEXT, "
+                         "solves INT, "
+                         "themes TEXT[],"
+                         "rating INT,"
+                         "problem_link TEXT NOT NULL);")
+        self.cur.execute("CREATE TABLE contests("
+                         "contest_id SERIAL PRIMARY KEY,"
+                         "theme_name TEXT,"
+                         "rating INT,"
+                         "list_of_problems TEXT[10]);")
+        self.connection.commit()
 
     # Закрытие подключения
     def close_session(self):

@@ -1,5 +1,6 @@
 import datetime
 import subprocess
+import sys
 
 import telebot
 from apscheduler.schedulers.background import BackgroundScheduler
@@ -7,9 +8,10 @@ from telebot import types
 
 from parser_bot.cruds import Session
 
-token = '6114556331:AAE9SNlPIKpgNdtaHYgAekvzAZounm4Yq4k'
+token, username, password, database = sys.argv[1:]
+
 bot = telebot.TeleBot(token)
-ses = Session()
+ses = Session(username=username, password=password, database=database)
 
 i = 1
 
