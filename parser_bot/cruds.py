@@ -38,14 +38,14 @@ class Session:
 
     # Создание таблиц
     def create_tables(self):
-        self.cur.execute("CREATE TABLE problems("
+        self.cur.execute("CREATE TABLE IF NOT EXISTS problems("
                          "problem_number TEXT PRIMARY KEY, "
                          "problem_name TEXT, "
                          "solves INT, "
                          "themes TEXT[],"
                          "rating INT,"
                          "problem_link TEXT NOT NULL);")
-        self.cur.execute("CREATE TABLE contests("
+        self.cur.execute("CREATE TABLE IF NOT EXISTS contests("
                          "contest_id SERIAL PRIMARY KEY,"
                          "theme_name TEXT,"
                          "rating INT,"
