@@ -1,4 +1,7 @@
+import time
+
 import psycopg2
+
 
 # Формирование красивого вывода для задачи
 def problem_repr(ans):
@@ -35,6 +38,7 @@ class Session:
             dbname=self.database)
         self.cur = self.connection.cursor()
         self.create_tables()
+        time.sleep(10)
 
     # Создание таблиц
     def create_tables(self):
@@ -63,6 +67,7 @@ class Session:
         self.cur.execute(f"INSERT INTO contests(theme_name, rating, list_of_problems) "
                          f"values ('{theme}', {rating}, array{list(contest)});")
         self.connection.commit()
+        time.sleep(2)
 
     # Формирование контеста
     def get_contest(self, theme, rating):
@@ -74,6 +79,7 @@ class Session:
             f"SELECT unnest(list_of_problems) FROM contests) "
             f"LIMIT 10;")
         contest = self.cur.fetchall()
+        time.sleep(2)
 
         # Если новые задачи по этим параметрам кончились, то берем существующий контест
         if not contest:
@@ -83,6 +89,7 @@ class Session:
                 f"SELECT list_of_problems FROM contests "
                 f"WHERE theme_name='{theme}' AND rating = {rating} LIMIT 1);")
             contest = self.cur.fetchall()
+            time.sleep(2)
         else:
             self.put_contest(contest, theme, rating)
         self.close_session()
@@ -94,6 +101,7 @@ class Session:
         self.cur.execute(
             f"SELECT * FROM problems WHERE problem_number='{number}';")
         problem = self.cur.fetchall()
+        time.sleep(2)
         self.close_session()
         return problem_repr(problem) if problem else "По Вашему запросу ничего не нашлось."
 
@@ -103,5 +111,6 @@ class Session:
         self.cur.execute(
             f"SELECT * FROM problems WHERE problem_name='{name}';")
         problem = self.cur.fetchall()
+        time.sleep(2)
         self.close_session()
         return problem_repr(problem) if problem else "По Вашему запросу ничего не нашлось."

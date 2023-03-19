@@ -30,8 +30,6 @@ sched = BackgroundScheduler()
 sched.add_job(scrap, 'interval', hours=1)
 sched.start()
 
-print(datetime.datetime.now())
-
 
 @bot.message_handler(commands=['start'])
 def start(message):
