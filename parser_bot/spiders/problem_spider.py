@@ -7,11 +7,12 @@ class ProblemSpider(scrapy.Spider):
     name = "problems"
     start_urls = ['https://codeforces.com/problemset?order=BY_SOLVED_DESC']
 
-
     def parse(self, response, **kwargs):
+        # Извлечение всех ссылок на задачи со страницы
         links = response.xpath("//table[@class='problems']/./tr/td[@class='id']/a/@href").extract()
         base_url = "https://codeforces.com"
 
+        # Извлечение параметров задач
         for link in links:
             solves = response.xpath(f"//a[@href='{link}']/../.."
                                     f"//a[@title='Количество решивших задачу']/text()").get()
@@ -28,8 +29,8 @@ class ProblemSpider(scrapy.Spider):
 
             yield p_item
 
+        # Получение последней страницы и итерация по ним
         last_page = max([int(p) for p in response.xpath("//span[@class='page-index']/a/text()").extract()])
         for page in range(2, last_page):
             url = f"https://codeforces.com/problemset/page/{page}?order=BY_SOLVED_DESC"
             yield response.follow(url, callback=self.parse)
-

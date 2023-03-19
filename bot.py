@@ -7,7 +7,7 @@ from telebot import types
 
 from parser_bot.cruds import Session
 
-token = '[PUT YOUR TOKEN HERE]'
+token = '6114556331:AAE9SNlPIKpgNdtaHYgAekvzAZounm4Yq4k'
 bot = telebot.TeleBot(token)
 ses = Session()
 
@@ -22,11 +22,14 @@ def scrap():
     subprocess.call('scrapy crawl problems')
 
 
+# Первый раз запускаем парсинг напрямую, далее это будет делать на фоне apscheduler
+scrap()
 sched = BackgroundScheduler()
 sched.add_job(scrap, 'interval', hours=1)
 sched.start()
 
 print(datetime.datetime.now())
+
 
 @bot.message_handler(commands=['start'])
 def start(message):
@@ -96,4 +99,3 @@ def start_contest(message):
 
 
 bot.polling(none_stop=True, interval=0)
-
